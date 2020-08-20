@@ -52,5 +52,7 @@ public class Client {
 
         textDTO.setCodeOperation(-1);
         objectOutputStream.writeObject(textDTO);
+
+        socket.close();
     }
 }

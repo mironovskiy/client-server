@@ -62,9 +62,15 @@ public class ClientHandler implements Runnable{
                 }
             }
 
-
         } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
+        }
+        finally {
+            try {
+                socket.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 
