@@ -8,10 +8,26 @@ import by.epamtc.task06.server.entity.Word;
 import by.epamtc.task06.server.service.TextService;
 import by.epamtc.task06.server.service.validation.Validator;
 
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.Properties;
 
 public class TextServiceImpl implements TextService {
-    private static final String CONSONANT_REGEX = "^(?i:[bcdfghjklmnpqrstvwxz]).*";
+    private static String consonantRegex;
+    private static final String PATH_TO_REGEX = "resources\\config.properties";
+
+    static{
+        try {
+            FileInputStream fileInputStream = new FileInputStream(PATH_TO_REGEX);
+            Properties properties = new Properties();
+            properties.load(fileInputStream);
+
+            consonantRegex = properties.getProperty("CONSONANT_REGEX");
+        } catch (IOException e) {
+            e.printStackTrace();
+            consonantRegex = "^(?i:[bcdfghjklmnpqrstvwxz]).*";
+        }
+    }
 
     @Override
     public Text getText() throws IOException {
@@ -67,7 +83,7 @@ public class TextServiceImpl implements TextService {
                     for (int k = 0; k < ((Paragraph)text.getComponents().get(i)).getSentences().get(j).getWords().size(); k++) {
 
                         if (((Paragraph)text.getComponents().get(i)).getSentences().get(j).getWords().get(k).getWord().length() == wordLength){
-                            if (((Paragraph)text.getComponents().get(i)).getSentences().get(j).getWords().get(k).getWord().matches(CONSONANT_REGEX)){
+                            if (((Paragraph)text.getComponents().get(i)).getSentences().get(j).getWords().get(k).getWord().matches(consonantRegex)){
                                 ((Paragraph)text.getComponents().get(i)).getSentences().get(j).delWord(((Paragraph)text.getComponents().get(i)).getSentences().get(j).getWords().get(k));
                             }
                         }

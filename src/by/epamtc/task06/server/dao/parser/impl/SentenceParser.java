@@ -4,9 +4,27 @@ import by.epamtc.task06.server.dao.parser.ParserDAO;
 import by.epamtc.task06.server.entity.Sentence;
 import by.epamtc.task06.server.entity.Word;
 
+import java.io.*;
+import java.util.Properties;
+
+
 public class SentenceParser implements ParserDAO {
     private static final SentenceParser instance = new SentenceParser();
-    private static final String SENTENCE_REGEX = "(?<=[.?!])\\s";
+    private static String sentenceRegex;
+    private static final String PATH_TO_REGEX = "resources\\config.properties";
+
+    static{
+        try {
+            FileInputStream fileInputStream = new FileInputStream(PATH_TO_REGEX);
+            Properties properties = new Properties();
+            properties.load(fileInputStream);
+
+            sentenceRegex = properties.getProperty("SENTENCE_REGEX");
+        } catch (IOException e) {
+            e.printStackTrace();
+            sentenceRegex = "(?<=[.?!])s";
+        }
+    }
 
 
     private SentenceParser(){};
@@ -20,7 +38,7 @@ public class SentenceParser implements ParserDAO {
         Sentence sentencesArr[];
         WordParser wordParser = WordParser.getInstance();
 
-        String sentences[] = paragraph.split(SENTENCE_REGEX);
+        String sentences[] = paragraph.split(sentenceRegex);
         sentencesArr = new Sentence[sentences.length];
 
         for (int i = 0; i < sentences.length; i++) {
